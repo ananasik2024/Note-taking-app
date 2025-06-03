@@ -19,5 +19,5 @@ def start():
         elif user_input == '6':
             com.del_notes()
         else:
-            print("Программа Журнал заметок завершена")
+            print("Журнал заметок закрыт. Хорошего дня!☀️")
             break
