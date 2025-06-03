@@ -8,72 +8,102 @@ def add_note():
     body = input("📝 Напишите текст заметки:\n")
     note = Note(title=title, body=body)
     array_notes = lF.read_file()
-    for i in array_notes:
-        if Note.get_id() == i.get_id():
-            Note.set_id()
+
+    # Проверка на уникальность ID
+    existing_ids = [n.get_id() for n in array_notes]
+    while note.get_id() in existing_ids:
+        note.set_id()  # генерация нового ID
+
     array_notes.append(note)
     wF.write_file(array_notes, 'w')
-    print("Заметка добавлена в журнал!🥰")
+
+    print("\n✅ Заметка добавлена в журнал!🥰")
+    print(f"🆔 ID новой заметки: {note.get_id()}")
+    print_note(note)
+    input("Нажмите Enter, чтобы вернуться в меню...")
 
 
 def show(txt):
     array_notes = lF.read_file()
 
-    if array_notes:
-        if txt == "all":
-            print("📒 ЖУРНАЛ ЗАМЕТОК 📒")
-            print("**********************")
-            for i in array_notes:
-                print(i.map_note())
+    if not array_notes:
+        print("🫙 Журнал заметок пуст")
+        print("Нажмите Enter, чтобы вернуться в меню...")
+        input()
+        return 
 
-        elif txt == "ID":
-            for i in array_notes:
-                print("ID: ", i.get_id())
-            id = input("\nВведите id заметки: ")
-            flag = True
-            for i in array_notes:
-                if id == i.get_id():
-                    print(i.map_note())
-                    flag = False
-            if flag:
-                print("🤷🏼‍♀️ Нет такого ID")
+    if txt == "all":
+        print("📒 ЖУРНАЛ ЗАМЕТОК 📒")
+        print("**********************")
+        for i in array_notes:
+            print_note(i)
 
-        elif txt == "date":
-            date = input("📆 Введите дату в формате: dd.mm.yyyy: ")
-            flag = True
-            for i in array_notes:
-                date_note = str(i.get_date())
-                if date == date_note[:10]:
-                    print(i.map_note())
-                    flag = False
-            if flag:
-                print("🤷🏼‍♀️ Нет такой даты")
-        else:
-            print("Журнал заметок пустой 🫙")
+    elif txt == "ID":
+        for i in array_notes:
+            print(f"ID: {i.get_id()}, Заголовок: {i.get_title()}")
+        id = input("\nВведите ID заметки: ").strip()
+        found = False
+        for i in array_notes:
+            if id == i.get_id():
+                print_note(i)
+                found = True
+        if not found:
+            print("🤷🏼‍♀️ Нет такого ID")
 
+    elif txt == "date":
+        date = input("📆 Введите дату в формате: dd.mm.yyyy: ").strip()
+        found = False
+        for i in array_notes:
+            note_date = i.get_date().split(" ")[0]
+            if date == note_date:
+                print_note(i)
+                found = True
+        if not found:
+            print("🤷🏼‍♀️ Нет заметок с такой датой")
+    print("Нажмите Enter, чтобы вернуться в меню...")
+    input()
+
+def print_note(note):
+    print("📝 Заметка:")
+    print(f"ID: {note.get_id()}")
+    print(f"Заголовок: {note.get_title()}")
+    print(f"Текст: {note.get_body()}")
+    print(f"Дата: {note.get_date()}")
+    print("―" * 40)
 
 def del_notes():
-    id = input("Введите ID удаляемой заметки: ")
+    id_to_delete = input("Введите ID удаляемой заметки: ").strip()
     array_notes = lF.read_file()
-    flag = False
 
-    for i in array_notes:
-        if id == i.get_id():
-            array_notes.remove(i)
-            flag = True
+    new_notes = [note for note in array_notes if note.get_id() != id_to_delete]
 
-    if flag:
-        wF.write_file(array_notes, 'w')
-        print("Заметка с id: ", id, " успешно удалена!😊")
-    else:
+    if len(new_notes) == len(array_notes):
         print("🤷🏼‍♀️ Нет такого id")
+    else:
+        wF.write_file(new_notes, 'w')
+        print(f"Заметка с id: {id_to_delete} успешно удалена!😊")
+
+    input("Нажмите Enter, чтобы вернуться в меню...")
 
 
 def change_note():
-    id = input("Введите ID изменяемой заметки: ")
     array_notes = lF.read_file()
+    if not array_notes:
+        print("🫙 Журнал заметок пуст")
+        input("Нажмите Enter, чтобы вернуться в меню...")
+        return
+
+    print("📒 ЖУРНАЛ ЗАМЕТОК 📒")
+    print("**********************")
+    for note in array_notes:
+        print_note(note)
+
+    input("Нажмите Enter, чтобы выбрать заметку для изменения...")
+
+    id = input("Введите ID изменяемой заметки: ").strip()
     flag = False
     array_notes_new = []
+
     for i in array_notes:
         if id == i.get_id():
             i.title = input("Измените заголовок заметки:\n")
@@ -84,9 +114,11 @@ def change_note():
 
     if flag:
         wF.write_file(array_notes_new, 'w')
-        print("Заметка с id: ", id, " успешно изменена!😊")
+        print("Заметка с ID:", id, "успешно изменена!☺️")
     else:
-        print("🤷🏼‍♀️ Нет такого id")
+        print("🤷🏼‍♀️ Нет такого ID")
+
+    input("Нажмите Enter, чтобы вернуться в меню...")
 
 
 

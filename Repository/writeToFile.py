@@ -10,7 +10,8 @@ def write_file(array, mode='w'):
             "body": note.get_body(),
             "date": note.get_date()
         })
-
+    print(f"DEBUG: Записываю {len(data)} заметок в файл.")
+    
     try:
         with open("notes.json", mode, encoding="utf-8") as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
