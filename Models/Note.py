@@ -1,42 +1,46 @@
 from datetime import datetime
-import uuid
 import Controller.counter as counter
 
 
 class Note:
-    def __init__(self, id=str(counter.counter()), title="текст", body="текст",
-                 date=str(datetime.now().strftime("%d.%m.%Y %H:%M:%S"))):
-        self.id = id
+    def __init__(self, 
+                 id: str = None,
+                 title: str = "текст", 
+                 body: str = "текст",
+                 date: str = None):
+        self.id = id if id else str(counter.counter())
         self.title = title
         self.body = body
-        self.date = date
+        self.date = date if date else datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
-    def get_id(note):
-        return note.id
+    def get_id(self) -> str:
+        return self.id
 
-    def get_title(note):
-        return note.title
+    def get_title(self) -> str:
+        return self.title
 
-    def get_body(note):
-        return note.body
+    def get_body(self) -> str:
+        return self.body
 
-    def get_date(note):
-        return note.date
+    def get_date(self) -> str:
+        return self.date
 
-    def set_id(note):
-        note.id = str(counter.counter())
+    def set_id(self):
+        self.id = str(counter.counter())
 
-    def set_title(note):
-        note.title = note
+    def set_title(self, title: str):
+        self.title = title
 
-    def set_body(note):
-        note.body = note
+    def set_body(self, body: str):
+        self.body = body
 
-    def set_date(note):
-        note.date = str(datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
+    def set_date(self):
+        self.date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
-    def to_string(note):
-        return note.id + ';' + note.title + ';' + note.body + ';' + note.date
-
-    def map_note(note):
-        return '\nID: ' + note.id + '\n' + 'Название: ' + note.title + '\n' + 'Описание: ' + note.body + '\n' + 'Дата публикации: ' + note.date
+    def map_note(self) -> str:
+        return (
+            f"\nID: {self.id}\n"
+            f"Название: {self.title}\n"
+            f"Описание: {self.body}\n"
+            f"Дата публикации: {self.date}"
+        )
